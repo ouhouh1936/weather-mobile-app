@@ -69,6 +69,9 @@ const TodayScreen = () => {
               case "clear sky":
                 setWeatherStatus("날씨가 좋습니다.");
                 break;
+              case "moderate rain":
+                setWeatherStatus("비가 오고있습니다.");
+                break;
               case "few clouds":
                 setWeatherStatus("조금 흐립니다.");
                 break;
