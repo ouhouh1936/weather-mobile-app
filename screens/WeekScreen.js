@@ -3,13 +3,30 @@ import {
   View,
   Text,
   StyleSheet,
-  Touchable,
+  Button,
   TouchableOpacity,
+  SafeAreaView,
+  FlatList,
 } from "react-native";
 import * as Location from "expo-location";
-const WEATHER_API_KEY = "d5463ce650cc583333f40ffbbaa16be4";
+
+const WEATHER_API_KEY = "c2279690f1a92e1324cfa1a79d5584ed";
+/*useEffect에는 async가 안걸림 아래에 가상의 함수를 만듦 */
 
 const WeekScreen = () => {
+  const Item = ({ time, temp }) => {
+    return (
+      <View style={styles.listBox}>
+        <Text>{time}</Text>
+        <Text>{temp}</Text>
+      </View>
+    );
+  };
+
+  const renderItem = ({ item }) => {
+    return <Item time={String(item.dateTime).split(` `)[1]} temp={item.temp} />;
+  };
+
   const [data0Date, setData0Date] = useState(null);
   const [data1Date, setData1Date] = useState(null);
   const [data2Date, setData2Date] = useState(null);
@@ -148,51 +165,47 @@ const WeekScreen = () => {
                   break;
               }
             });
-
             setData0Date(arr0);
+            if (data0Date) {
+              if (btnFlag0) {
+                setBtnName0(String(data0Date[0].dateTime).substring(5, 10));
+                setBtnFlag0(false);
+              }
+            }
             setData1Date(arr1);
+            if (data0Date) {
+              if (btnFlag1) {
+                setBtnName1(String(data1Date[0].dateTime).substring(5, 10));
+                setBtnFlag1(false);
+              }
+            }
             setData2Date(arr2);
+            if (data2Date) {
+              if (btnFlag2) {
+                setBtnName2(String(data2Date[0].dateTime).substring(5, 10));
+                setBtnFlag2(false);
+              }
+            }
             setData3Date(arr3);
+            if (data3Date) {
+              if (btnFlag3) {
+                setBtnName3(String(data3Date[0].dateTime).substring(5, 10));
+                setBtnFlag3(false);
+              }
+            }
             setData4Date(arr4);
+            if (data4Date) {
+              if (btnFlag4) {
+                setBtnName4(String(data4Date[0].dateTime).substring(5, 10));
+                setBtnFlag4(false);
+              }
+            }
           });
       } catch (e) {
         console.log(e);
       }
     })();
   }, []);
-
-  if (data0Date) {
-    if (btnFlag0) {
-      setBtnName0(String(data0Date[0].dateTime).substring(5, 10));
-      setBtnFlag0(false);
-    }
-  }
-
-  if (data1Date) {
-    if (btnFlag1) {
-      setBtnName1(String(data1Date[0].dateTime).substring(5, 10));
-      setBtnFlag1(false);
-    }
-  }
-
-  if (data2Date) {
-    if (btnFlag2) {
-      setBtnName2(String(data2Date[0].dateTime).substring(5, 10));
-      setBtnFlag2(false);
-    }
-  }
-  if (data3Date) {
-    if (btnFlag3) {
-      setBtnName3(String(data3Date[0].dateTime).substring(5, 10));
-      setBtnFlag3(false);
-    }
-  }
-  if (data4Date) {
-    if (btnFlag4) {
-      setBtnName4(String(data4Date[0].dateTime).substring(5, 10));
-      setBtnFlag4(false);
-    }
-  }
 
   return (
     <View style={styles.container}>
@@ -205,6 +218,7 @@ const WeekScreen = () => {
             <Text style={styles.btnTxt}>{btnName0}</Text>
           </TouchableOpacity>
         )}
+
         {btnName1 && (
           <TouchableOpacity
             style={tab === 1 ? styles.activeBtn : styles.standardBtn}
@@ -213,6 +227,7 @@ const WeekScreen = () => {
             <Text style={styles.btnTxt}>{btnName1}</Text>
           </TouchableOpacity>
         )}
+
         {btnName2 && (
           <TouchableOpacity
             style={tab === 2 ? styles.activeBtn : styles.standardBtn}
@@ -221,6 +236,7 @@ const WeekScreen = () => {
             <Text style={styles.btnTxt}>{btnName2}</Text>
           </TouchableOpacity>
         )}
+
         {btnName3 && (
           <TouchableOpacity
             style={tab === 3 ? styles.activeBtn : styles.standardBtn}
@@ -229,6 +245,7 @@ const WeekScreen = () => {
             <Text style={styles.btnTxt}>{btnName3}</Text>
           </TouchableOpacity>
         )}
+
         {btnName4 && (
           <TouchableOpacity
             style={tab === 4 ? styles.activeBtn : styles.standardBtn}
@@ -238,13 +255,43 @@ const WeekScreen = () => {
           </TouchableOpacity>
         )}
       </View>
-      <View style={styles.box2}>
-        {tab === 0 && <Text>0000000</Text>}
-        {tab === 1 && <Text>1111111</Text>}
-        {tab === 2 && <Text>2222222</Text>}
-        {tab === 3 && <Text>3333333</Text>}
-        {tab === 4 && <Text>4444444</Text>}
-      </View>
+      <SafeAreaView style={styles.box2}>
+        {tab === 0 && (
+          <FlatList
+            data={data0Date && data0Date}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+        {tab === 1 && (
+          <FlatList
+            data={data1Date && data1Date}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+        {tab === 2 && (
+          <FlatList
+            data={data2Date && data2Date}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+        {tab === 3 && (
+          <FlatList
+            data={data3Date && data3Date}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+        {tab === 4 && (
+          <FlatList
+            data={data4Date && data4Date}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+        )}
+      </SafeAreaView>
     </View>
   );
 };
@@ -252,52 +299,50 @@ const WeekScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: `center`,
+    justifyContent: `center`,
   },
 
   box1: {
-    width: `100%`,
     flex: 1,
+    width: `100%`,
     flexDirection: `row`,
     alignItems: `center`,
     justifyContent: `space-around`,
+    marginTop: 50,
   },
 
   box2: {
-    width: `100%`,
     flex: 4,
+    width: `100%`,
   },
 
   standardBtn: {
     width: `19%`,
-    height: 35,
-    backgroundColor: `#dfbdff`,
+    height: 45,
 
     alignItems: `center`,
     justifyContent: `center`,
-    borderRadius: 7,
+    borderRadius: 4.5,
+    borderColor: `rgb(200,200,200)`,
+    borderWidth: 1,
 
-    shadowColor: "#000",
+    shadowColor: "#999",
     shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.7,
-    shadowRadius: 2.1,
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
 
-    elevation: 18,
-  },
-
-  btnTxt: {
-    color: `#fff`,
+    elevation: 17,
   },
 
   activeBtn: {
     width: `19%`,
-    height: 35,
-    backgroundColor: `#ae57ff`,
+    height: 45,
 
+    backgroundColor: `#e7eb2a`,
     alignItems: `center`,
     justifyContent: `center`,
     borderRadius: 7,
@@ -305,12 +350,23 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 9,
     },
-    shadowOpacity: 0.7,
-    shadowRadius: 2.1,
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
 
-    elevation: 18,
+    elevation: 17,
+  },
+
+  btnTxt: {
+    fontWeight: `500`,
+    fontSize: 20,
+  },
+  listBox: {
+    width: `100%`,
+    flexDirection: `row`,
+    justifyContent: `space-around`,
+    marginBottom: 7,
   },
 });
 
